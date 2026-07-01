@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const pageId = document.body.dataset.page || 'home';
     const content = window.websiteContent;
-    
+
     if (!content) {
         console.error("Website content not loaded! Make sure content.js is included first.");
         return;
@@ -181,7 +181,7 @@ function generateNavMenuHTML(menuItems, activePageId) {
     return menuItems.map(item => {
         const hasChildren = item.children && item.children.length > 0;
         const isActive = isMenuItemActive(item, activePageId);
-        
+
         if (hasChildren) {
             return `
                 <li class="relative group">
@@ -193,11 +193,11 @@ function generateNavMenuHTML(menuItems, activePageId) {
                     <!-- Dropdown level 1 -->
                     <ul class="absolute left-0 mt-0 w-64 bg-white border border-gray-200 shadow-xl py-1 z-50 dropdown-menu-animate">
                         ${item.children.map(subItem => {
-                            const subHasChildren = subItem.children && subItem.children.length > 0;
-                            const subIsActive = isMenuItemActive(subItem, activePageId);
-                            
-                            if (subHasChildren) {
-                                return `
+                const subHasChildren = subItem.children && subItem.children.length > 0;
+                const subIsActive = isMenuItemActive(subItem, activePageId);
+
+                if (subHasChildren) {
+                    return `
                                     <li class="relative group/sub">
                                         <a href="${cleanUrl(subItem.href)}" ${getLinkTarget(subItem.href)} class="w-full text-left px-4 py-2.5 text-[13px] font-medium text-gray-700 hover:bg-[#d30404] hover:text-white flex justify-between items-center transition-all">
                                             <span>${subItem.label}</span>
@@ -207,10 +207,10 @@ function generateNavMenuHTML(menuItems, activePageId) {
                                         <!-- Dropdown level 2 -->
                                         <ul class="absolute left-full top-0 mt-0 ml-0 w-56 bg-white border border-gray-200 shadow-xl py-1 z-50 dropdown-menu-animate group-hover/sub:opacity-100 group-hover/sub:visible">
                                             ${subItem.children.map(grandItem => {
-                                                const grandHasChildren = grandItem.children && grandItem.children.length > 0;
-                                                
-                                                if (grandHasChildren) {
-                                                    return `
+                        const grandHasChildren = grandItem.children && grandItem.children.length > 0;
+
+                        if (grandHasChildren) {
+                            return `
                                                         <li class="relative group/grand">
                                                             <a href="${cleanUrl(grandItem.href)}" ${getLinkTarget(grandItem.href)} class="w-full text-left px-4 py-2.5 text-[13px] font-medium text-gray-700 hover:bg-[#d30404] hover:text-white flex justify-between items-center transition-all">
                                                                 <span>${grandItem.label}</span>
@@ -229,29 +229,29 @@ function generateNavMenuHTML(menuItems, activePageId) {
                                                             </ul>
                                                         </li>
                                                     `;
-                                                }
-                                                
-                                                return `
+                        }
+
+                        return `
                                                     <li>
                                                         <a href="${cleanUrl(grandItem.href)}" ${getLinkTarget(grandItem.href)} class="block px-4 py-2.5 text-[13px] text-gray-700 hover:bg-[#d30404] hover:text-white font-medium transition-all">
                                                             ${grandItem.label}
                                                         </a>
                                                     </li>
                                                 `;
-                                            }).join('')}
+                    }).join('')}
                                         </ul>
                                     </li>
                                 `;
-                            }
-                            
-                            return `
+                }
+
+                return `
                                 <li>
                                     <a href="${cleanUrl(subItem.href)}" ${getLinkTarget(subItem.href)} class="block px-4 py-2.5 text-[13px] font-medium text-gray-700 hover:bg-[#d30404] hover:text-white transition-all ${subIsActive ? 'bg-[#d30404] text-white' : ''}">
                                         ${subItem.label}
                                     </a>
                                 </li>
                             `;
-                        }).join('')}
+            }).join('')}
                     </ul>
                 </li>
             `;
@@ -272,7 +272,7 @@ function generateMobileMenuHTML(menuItems, activePageId, depth = 0) {
     return menuItems.map(item => {
         const hasChildren = item.children && item.children.length > 0;
         const paddingLeft = 4 + (depth * 4);
-        
+
         if (hasChildren) {
             const toggleId = `mob-toggle-${item.label.replace(/\s+/g, '-').toLowerCase()}`;
             return `
@@ -299,7 +299,7 @@ function generateMobileMenuHTML(menuItems, activePageId, depth = 0) {
 }
 
 // Toggle mobile sub-menus
-window.toggleMobileSubmenu = function(submenuId) {
+window.toggleMobileSubmenu = function (submenuId) {
     const el = document.getElementById(submenuId);
     if (el) {
         el.classList.toggle('hidden');
@@ -568,7 +568,7 @@ function renderHomepageContent(content, container) {
 
     // 3. About section + Notifications panel (two columns)
     const homeData = content.pages['home'];
-    
+
     let aboutHeading = "About Amareshwar Arts And Commerce Degree College, Aurad-B";
     let aboutParagraphs = [];
 
@@ -772,137 +772,223 @@ function renderSubpageContent(content, pageId, container) {
         blocksHTML = renderContactUsPage(content);
     } else if (pageId === 'gallery') {
         blocksHTML = renderGalleryPage();
+    } else if (pageId === 'about-the-college') {
+        blocksHTML = renderAboutTheCollegePage(content, pageData);
     } else {
-        blocksHTML = `
-            <div class="max-w-4xl mx-auto px-4 py-12">
-                <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-6 md:p-10">
-                    ${pageData.sections.map(section => {
-                        let secHTML = '';
-                        if (section.heading) {
-                            const headingClass = section.heading_type === 'h3' ? 'text-xl font-bold text-[#1a1a4e] mt-8 mb-4' : 'text-2xl font-serif-brand font-bold text-[#1a1a4e] border-b border-gray-100 pb-2 mt-10 mb-6';
-                            secHTML += `<h2 class="${headingClass}">${section.heading}</h2>`;
-                        }
-                        
-                        const bodyHTML = section.content.map(block => {
-                            if (block.type === 'p') {
-                                if (block.text.includes("Content Not Available")) {
-                                    return `
-                                        <div class="bg-gray-50 border-l-4 border-[#1a1a4e] text-gray-500 p-4 rounded text-sm select-none my-4">
-                                            ${block.text}
-                                        </div>
-                                    `;
-                                }
-                                
-                                let link = null;
-                                if (pageId === 'iqac') {
-                                    const trimmedText = block.text.trim();
-                                    const sectionHeading = section.heading ? section.heading.trim() : '';
-                                    if (sectionHeading === 'IQAC') {
-                                        if (trimmedText === 'Undertaking') {
-                                            link = 'Docs/NAAC/IQAC/Undertaking.pdf';
-                                        } else if (trimmedText === 'Declaration') {
-                                            link = 'Docs/NAAC/IQAC/declaration.pdf';
-                                        } else if (trimmedText === '2F') {
-                                            link = 'Docs/NAAC/IQAC/2F.pdf';
-                                        } else if (trimmedText === '12B') {
-                                            link = 'Docs/NAAC/IQAC/12B.pdf';
-                                        } else if (trimmedText.includes('C-9051_certificateold_-DCF')) {
-                                            link = 'Docs/NAAC/IQAC/C-9051_certificateold_-DCF-6.pdf';
-                                        }
-                                    } else if (sectionHeading === 'AQAR') {
-                                        if (trimmedText === 'AQAR 2018-19') {
-                                            link = 'Docs/NAAC/AQAR/2018_19.pdf';
-                                        } else if (trimmedText === 'AQAR 2019-20') {
-                                            link = 'Docs/NAAC/AQAR/2019_20.pdf';
-                                        } else if (trimmedText === 'AQAR 2020-21') {
-                                            link = 'Docs/NAAC/AQAR/2020_21.pdf';
-                                        } else if (trimmedText === 'AQAR 2021-22') {
-                                            link = 'Docs/NAAC/AQAR/2021_22.pdf';
-                                        }
-                                    } else if (sectionHeading === 'IQAC-Meeting Minutes') {
-                                        if (trimmedText.includes('2018-19')) {
-                                            link = 'Docs/NAAC/IQAC_meeting/1st.pdf';
-                                        } else if (trimmedText.includes('2019-20')) {
-                                            link = 'Docs/NAAC/IQAC_meeting/2nd.pdf';
-                                        } else if (trimmedText.includes('2020-21')) {
-                                            link = 'Docs/NAAC/IQAC_meeting/3rd.pdf';
-                                        } else if (trimmedText.includes('2021-22')) {
-                                            link = 'Docs/NAAC/IQAC_meeting/4th.pdf';
-                                        } else if (trimmedText.includes('2022-23')) {
-                                            link = 'Docs/NAAC/IQAC_meeting/5th.pdf';
-                                        }
-                                    } else if (sectionHeading === 'IQAC Composition') {
-                                        if (trimmedText === 'IQAC Composition') {
-                                            link = 'Docs/NAAC/IQAC composition/iqac_0001.pdf';
-                                        }
-                                    }
-                                } else {
-                                    link = getSsrLink(pageId, block.text, 'p');
-                                }
-                                
-                                if (link) {
-                                    return `
-                                        <p class="mb-4 text-sm md:text-[15px]">
-                                            <a href="${link}" target="_blank" class="text-gray-700 hover:text-[#d30404] hover:underline font-semibold transition-colors duration-150 cursor-pointer">
-                                                ${block.text}
-                                            </a>
-                                        </p>
-                                    `;
-                                }
-                                
-                                return `<p class="text-gray-600 leading-relaxed mb-4 text-sm md:text-[15px]">${block.text}</p>`;
-                            } else if (block.type === 'list') {
-                                return `
-                                    <ul class="list-disc list-inside space-y-2 mb-6 ml-4 text-gray-600 text-sm md:text-[15px]">
-                                        ${block.items.map(item => {
-                                            let link = null;
-                                            if (pageId === 'extension-activities') {
-                                                // Convert item text into corresponding PDF filename under Docs/SSR/Extension Activities/[Year]/
-                                                let filename = item.trim()
-                                                    .replace(/’/g, '') // remove curly apostrophes
-                                                    .replace(/\s+/g, ' '); // normalize spaces
-                                                
-                                                filename = filename.replace(/\.\s/, '.-'); // Replace the first dot-space with .-
-                                                filename = filename.replace(/\s/g, '-'); // Replace all other spaces with hyphens
-                                                
-                                                // Handle naming discrepancies
-                                                if (section.heading === '2019-20' && item.includes('climate change')) {
-                                                    filename = '5.-climate-change-docs-1';
-                                                }
-                                                
-                                                link = `Docs/SSR/Extension Activities/${section.heading}/${filename}.pdf`;
-                                            } else {
-                                                link = getSsrLink(pageId, item, 'list');
-                                            }
-                                            
-                                            if (link) {
-                                                return `
-                                                    <li class="leading-relaxed">
-                                                        <a href="${link}" target="_blank" class="text-gray-700 hover:text-[#d30404] hover:underline transition-colors duration-150 cursor-pointer">
-                                                            ${item}
-                                                        </a>
-                                                    </li>
-                                                `;
-                                            }
-                                            return `
-                                                <li class="leading-relaxed">
-                                                    <span class="text-gray-700">${item}</span>
-                                                </li>
-                                            `;
-                                        }).join('')}
-                                    </ul>
-                                `;
-                            } else if (block.type === 'table') {
-                                return renderHTMLTable(block.data);
-                            }
-                            return '';
-                        }).join('');
+        window.switchCourseTab = window.switchCourseTab || function (tabId, buttonEl) {
+            document.querySelectorAll('.tab-content-panel').forEach(panel => {
+                panel.classList.add('hidden');
+            });
+            const activePanel = document.getElementById(tabId);
+            if (activePanel) {
+                activePanel.classList.remove('hidden');
+            }
+            document.querySelectorAll('.course-tab-btn').forEach(btn => {
+                btn.classList.remove('bg-[#1a1a4e]');
+                btn.classList.add('bg-[#b30000]', 'hover:bg-[#990000]');
+            });
+            if (buttonEl) {
+                buttonEl.classList.remove('bg-[#b30000]', 'hover:bg-[#990000]');
+                buttonEl.classList.add('bg-[#1a1a4e]');
+            }
+        };
 
-                        return secHTML + bodyHTML;
+        const renderSectionBlocks = (section) => {
+            return section.content.map(block => {
+                if (block.type === 'p') {
+                    if (block.text.includes("Content Not Available")) {
+                        return `
+                            <div class="bg-gray-50 border-l-4 border-[#1a1a4e] text-gray-500 p-4 rounded text-sm select-none my-4">
+                                ${block.text}
+                            </div>
+                        `;
+                    }
+
+                    let link = null;
+                    if (pageId === 'iqac') {
+                        const trimmedText = block.text.trim();
+                        const sectionHeading = section.heading ? section.heading.trim() : '';
+                        if (sectionHeading === 'IQAC') {
+                            if (trimmedText === 'Undertaking') {
+                                link = 'Docs/NAAC/IQAC/Undertaking.pdf';
+                            } else if (trimmedText === 'Declaration') {
+                                link = 'Docs/NAAC/IQAC/declaration.pdf';
+                            } else if (trimmedText === '2F') {
+                                link = 'Docs/NAAC/IQAC/2F.pdf';
+                            } else if (trimmedText === '12B') {
+                                link = 'Docs/NAAC/IQAC/12B.pdf';
+                            } else if (trimmedText.includes('C-9051_certificateold_-DCF')) {
+                                link = 'Docs/NAAC/IQAC/C-9051_certificateold_-DCF-6.pdf';
+                            }
+                        } else if (sectionHeading === 'AQAR') {
+                            if (trimmedText === 'AQAR 2018-19') {
+                                link = 'Docs/NAAC/AQAR/2018_19.pdf';
+                            } else if (trimmedText === 'AQAR 2019-20') {
+                                link = 'Docs/NAAC/AQAR/2019_20.pdf';
+                            } else if (trimmedText === 'AQAR 2020-21') {
+                                link = 'Docs/NAAC/AQAR/2020_21.pdf';
+                            } else if (trimmedText === 'AQAR 2021-22') {
+                                link = 'Docs/NAAC/AQAR/2021_22.pdf';
+                            }
+                        } else if (sectionHeading === 'IQAC-Meeting Minutes') {
+                            if (trimmedText.includes('2018-19')) {
+                                link = 'Docs/NAAC/IQAC_meeting/1st.pdf';
+                            } else if (trimmedText.includes('2019-20')) {
+                                link = 'Docs/NAAC/IQAC_meeting/2nd.pdf';
+                            } else if (trimmedText.includes('2020-21')) {
+                                link = 'Docs/NAAC/IQAC_meeting/3rd.pdf';
+                            } else if (trimmedText.includes('2021-22')) {
+                                link = 'Docs/NAAC/IQAC_meeting/4th.pdf';
+                            } else if (trimmedText.includes('2022-23')) {
+                                link = 'Docs/NAAC/IQAC_meeting/5th.pdf';
+                            }
+                        } else if (sectionHeading === 'IQAC Composition') {
+                            if (trimmedText === 'IQAC Composition') {
+                                link = 'Docs/NAAC/IQAC composition/iqac_0001.pdf';
+                            }
+                        }
+                    } else {
+                        link = getSsrLink(pageId, block.text, 'p');
+                    }
+
+                    if (link) {
+                        return `
+                            <p class="mb-4 text-sm md:text-[15px]">
+                                <a href="${link}" target="_blank" class="text-[#d30404] hover:underline font-semibold transition-colors duration-150 cursor-pointer inline-flex items-start">
+                                    <span class="inline-flex items-center justify-center w-5 h-5 bg-[#d30404] rounded-sm mr-2.5 shrink-0 mt-0.5">
+                                        <span class="flex items-center justify-center w-3.5 h-3.5 bg-white rounded-full">
+                                            <svg class="w-2.5 h-2.5 text-[#d30404]" fill="none" stroke="currentColor" stroke-width="4" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                                            </svg>
+                                        </span>
+                                    </span>
+                                    <span>${block.text}</span>
+                                </a>
+                            </p>
+                        `;
+                    }
+
+                    return `<p class="text-gray-600 leading-relaxed mb-4 text-sm md:text-[15px]">${block.text}</p>`;
+                } else if (block.type === 'list') {
+                    return `
+                        <ul class="space-y-2 mb-6 text-gray-600 text-sm md:text-[15px]">
+                            ${block.items.map(item => {
+                        let link = null;
+                        if (pageId === 'extension-activities') {
+                            let filename = item.trim()
+                                .replace(/’/g, '')
+                                .replace(/\s+/g, ' ');
+
+                            filename = filename.replace(/\.\s/, '.-');
+                            filename = filename.replace(/\s/g, '-');
+
+                            if (section.heading === '2019-20' && item.includes('climate change')) {
+                                filename = '5.-climate-change-docs-1';
+                            }
+
+                            link = `Docs/SSR/Extension Activities/${section.heading}/${filename}.pdf`;
+                        } else {
+                            link = getSsrLink(pageId, item, 'list');
+                        }
+
+                        if (link) {
+                            return `
+                                        <li class="leading-relaxed list-none">
+                                            <a href="${link}" target="_blank" class="text-[#d30404] hover:underline font-semibold transition-colors duration-150 cursor-pointer inline-flex items-start">
+                                                <span class="inline-flex items-center justify-center w-5 h-5 bg-[#d30404] rounded-sm mr-2.5 shrink-0 mt-0.5">
+                                                    <span class="flex items-center justify-center w-3.5 h-3.5 bg-white rounded-full">
+                                                        <svg class="w-2.5 h-2.5 text-[#d30404]" fill="none" stroke="currentColor" stroke-width="4" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                                                        </svg>
+                                                    </span>
+                                                </span>
+                                                <span>${item}</span>
+                                            </a>
+                                        </li>
+                                    `;
+                        }
+                        return `
+                                    <li class="leading-relaxed list-disc ml-5">
+                                        <span class="text-gray-700">${item}</span>
+                                    </li>
+                                `;
                     }).join('')}
+                        </ul>
+                    `;
+                } else if (block.type === 'table') {
+                    return renderHTMLTable(block.data);
+                }
+                return '';
+            }).join('');
+        };
+
+        if (pageId === 'kannada' || pageId === 'english' || pageId === 'hindi') {
+            const mainHeading = pageData.sections[1] ? pageData.sections[1].heading : `B.A-${pageData.title}`;
+            const tabSections = pageData.sections.slice(2);
+
+            const tabsNavHTML = tabSections.map((sec, idx) => {
+                const isFirst = idx === 0;
+                return `
+                    <button onclick="switchCourseTab('tab-${idx}', this)" class="course-tab-btn w-full text-left px-4 py-3.5 text-[14px] font-bold text-white ${isFirst ? 'bg-[#1a1a4e]' : 'bg-[#b30000] hover:bg-[#990000]'} rounded transition-all flex items-center shadow-sm select-none cursor-pointer">
+                        <span class="mr-2 font-mono">&raquo;</span>
+                        <span>${sec.heading}</span>
+                    </button>
+                `;
+            }).join('');
+
+            const tabsContentHTML = tabSections.map((sec, idx) => {
+                const isFirst = idx === 0;
+                const bodyHTML = renderSectionBlocks(sec);
+                return `
+                    <div id="tab-${idx}" class="tab-content-panel ${isFirst ? '' : 'hidden'}">
+                        <h3 class="text-xl font-bold text-[#1a1a4e] border-b border-gray-100 pb-2 mb-6">${sec.heading}</h3>
+                        <div>
+                            ${bodyHTML || '<p class="text-gray-500 italic">No content available for this section.</p>'}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            blocksHTML = `
+                <div class="max-w-[1200px] mx-auto px-4 py-12">
+                    <div class="text-center mb-10">
+                        <h2 class="text-3xl font-serif-brand font-bold text-[#d30404] tracking-wide inline-block border-b-2 border-[#d30404] pb-2">
+                            ${mainHeading}
+                        </h2>
+                    </div>
+
+                    <div class="flex flex-col lg:flex-row gap-8">
+                        <!-- Sidebar Navigation -->
+                        <div class="w-full lg:w-1/4 shrink-0">
+                            <div class="flex flex-col space-y-2">
+                                ${tabsNavHTML}
+                            </div>
+                        </div>
+                        
+                        <!-- Tab Content -->
+                        <div class="w-full lg:w-3/4 bg-white rounded-lg shadow-sm border border-gray-150 p-6 md:p-8 min-h-[400px]">
+                            ${tabsContentHTML}
+                        </div>
+                    </div>
                 </div>
-            </div>
-        `;
+            `;
+        } else {
+            blocksHTML = `
+                <div class="max-w-4xl mx-auto px-4 py-12">
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-6 md:p-10">
+                        ${pageData.sections.map(section => {
+                let secHTML = '';
+                if (section.heading) {
+                    const headingClass = section.heading_type === 'h3' ? 'text-xl font-bold text-[#1a1a4e] mt-8 mb-4' : 'text-2xl font-serif-brand font-bold text-[#1a1a4e] border-b border-gray-100 pb-2 mt-10 mb-6';
+                    secHTML += `<h2 class="${headingClass}">${section.heading}</h2>`;
+                }
+                const bodyHTML = renderSectionBlocks(section);
+                return secHTML + bodyHTML;
+            }).join('')}
+                    </div>
+                </div>
+            `;
+        }
     }
 
     container.innerHTML = bannerHTML + blocksHTML;
@@ -911,7 +997,7 @@ function renderSubpageContent(content, pageId, container) {
 // Render HTML table
 function renderHTMLTable(tableData) {
     if (!tableData || tableData.length === 0) return '';
-    
+
     const headers = tableData[0];
     const rows = tableData.slice(1);
 
@@ -1046,20 +1132,20 @@ function renderContactUsPage(content) {
 }
 
 // Handle contact form submission
-window.handleContactSubmit = function(event) {
+window.handleContactSubmit = function (event) {
     event.preventDefault();
     const form = event.target;
     const inputs = form.querySelectorAll('input');
     const textarea = form.querySelector('textarea');
-    
+
     const name = inputs[0].value;
     const email = inputs[1].value;
     const subject = inputs[2].value;
     const message = textarea.value;
-    
+
     const body = `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`;
     const mailtoUrl = `mailto:adcab1979@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    
+
     window.location.href = mailtoUrl;
     alert("Thank you! Opening your email client to send the message to adcab1979@gmail.com.");
     form.reset();
@@ -1117,6 +1203,57 @@ function renderGalleryPage() {
     `;
 }
 
+// Render About the College page
+function renderAboutTheCollegePage(content, pageData) {
+    const section = pageData.sections[1];
+    if (!section) return '';
+
+    const heading = section.heading;
+    const paragraphs = section.content.filter(block => block.type === 'p');
+
+    const p0 = paragraphs[0] ? paragraphs[0].text : '';
+    const p1 = paragraphs[1] ? paragraphs[1].text : '';
+    const p2 = paragraphs[2] ? paragraphs[2].text : '';
+    const p3 = paragraphs[3] ? paragraphs[3].text : '';
+    const p4 = paragraphs[4] ? paragraphs[4].text : '';
+
+    return `
+        <div class="max-w-6xl mx-auto px-4 py-16">
+            <div class="flex flex-col lg:flex-row gap-12 items-center mb-10">
+                <!-- Left: Decorative Image Layout -->
+                <div class="shrink-0 relative w-[280px] h-[280px] sm:w-[320px] sm:h-[320px] mx-auto lg:mx-0 select-none">
+                    <!-- Top-Left Shape -->
+                    <div class="absolute -top-5 -left-5 w-36 h-36 bg-gradient-to-tr from-[#b3004b] via-[#7c0068] to-[#45006b] rounded-3xl opacity-90 z-0"></div>
+                    <!-- Bottom-Right Shape -->
+                    <div class="absolute -bottom-5 -right-5 w-36 h-36 bg-gradient-to-tr from-[#b3004b] via-[#7c0068] to-[#45006b] rounded-3xl opacity-90 z-0"></div>
+                    <!-- College Image -->
+                    <img src="Images/About us/About the College/college-400x400.png" alt="Amareshwar Arts and Commerce Degree College" class="relative z-10 w-full h-full object-cover rounded-2xl shadow-2xl border-4 border-white">
+                </div>
+
+                <!-- Right: Content -->
+                <div class="flex-grow">
+                    <h2 class="text-2xl md:text-3xl font-serif-brand font-bold text-[#d30404] leading-tight mb-3">
+                        ${heading}
+                    </h2>
+                    <div class="w-20 h-[3px] bg-gradient-to-r from-[#d30404] to-[#1a1a4e] mb-6"></div>
+                    
+                    <div class="space-y-4 text-gray-600 text-sm md:text-[15px] leading-relaxed">
+                        ${p0 ? `<p>${p0}</p>` : ''}
+                        ${p1 ? `<p>${p1}</p>` : ''}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Full-Width Content -->
+            <div class="space-y-4 text-gray-600 text-sm md:text-[15px] leading-relaxed border-t border-gray-100 pt-8">
+                ${p2 ? `<p>${p2}</p>` : ''}
+                ${p3 ? `<p>${p3}</p>` : ''}
+                ${p4 ? `<p>${p4}</p>` : ''}
+            </div>
+        </div>
+    `;
+}
+
 // ============================================================
 // Interactive Element Initializers
 // ============================================================
@@ -1127,15 +1264,15 @@ function initTicker() {
 }
 
 // News ticker scroll control
-window.scrollNewsTicker = function(direction) {
+window.scrollNewsTicker = function (direction) {
     const tickerContent = document.getElementById('news-ticker-content');
     if (!tickerContent) return;
-    
+
     const currentTransform = tickerContent.style.transform || '';
     const match = currentTransform.match(/translateX\((-?\d+)px\)/);
     const currentX = match ? parseInt(match[1]) : 0;
     const newX = currentX + (direction * -200);
-    
+
     tickerContent.style.transition = 'transform 0.3s ease';
     tickerContent.style.transform = `translateX(${newX}px)`;
 };
@@ -1156,7 +1293,7 @@ function initMobileMenu() {
     btn.addEventListener('click', () => {
         const isHidden = menu.classList.contains('hidden');
         menu.classList.toggle('hidden');
-        
+
         if (isHidden) {
             icon.setAttribute('d', 'M6 18L18 6M6 6l12 12');
         } else {
@@ -1179,36 +1316,36 @@ function initHeroCarousel() {
     updateHeroCarouselIndicators();
 }
 
-window.nextHeroSlide = function() {
+window.nextHeroSlide = function () {
     const slides = document.querySelectorAll('.hero-slide');
     if (slides.length === 0) return;
-    
+
     slides[currentHeroIndex].classList.remove('active');
     currentHeroIndex = (currentHeroIndex + 1) % slides.length;
     slides[currentHeroIndex].classList.add('active');
-    
+
     updateHeroCarouselIndicators();
 };
 
-window.prevHeroSlide = function() {
+window.prevHeroSlide = function () {
     const slides = document.querySelectorAll('.hero-slide');
     if (slides.length === 0) return;
-    
+
     slides[currentHeroIndex].classList.remove('active');
     currentHeroIndex = (currentHeroIndex - 1 + slides.length) % slides.length;
     slides[currentHeroIndex].classList.add('active');
-    
+
     updateHeroCarouselIndicators();
 };
 
-window.setHeroSlide = function(index) {
+window.setHeroSlide = function (index) {
     const slides = document.querySelectorAll('.hero-slide');
     if (slides.length === 0 || index >= slides.length) return;
 
     slides[currentHeroIndex].classList.remove('active');
     currentHeroIndex = index;
     slides[currentHeroIndex].classList.add('active');
-    
+
     updateHeroCarouselIndicators();
 
     if (heroTimer) clearInterval(heroTimer);
@@ -1231,10 +1368,10 @@ function updateHeroCarouselIndicators() {
 }
 
 // Lightbox handlers
-window.openLightbox = function(photoId) {
+window.openLightbox = function (photoId) {
     const modal = document.getElementById('gallery-lightbox');
     const title = document.getElementById('lightbox-title');
-    
+
     if (modal && title) {
         title.textContent = `Campus Gallery Event #${photoId}`;
         modal.style.display = 'block';
@@ -1242,7 +1379,7 @@ window.openLightbox = function(photoId) {
     }
 };
 
-window.closeLightbox = function() {
+window.closeLightbox = function () {
     const modal = document.getElementById('gallery-lightbox');
     if (modal) {
         modal.style.display = 'none';
